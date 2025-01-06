@@ -17,9 +17,7 @@ public class HandlerMapping {
 
     public Handler findHandler(HttpRequest httpRequest) {
         if (httpRequest.getMethod().equals("GET")) { // TODO ENUM으로 관리 & 테스트 코드
-            if (httpRequest.getResource().matches(".*\\.(html|css)$")) {
                 return handlers.get("FILE");
-            }
         }
         return handlers.get("DEFAULT");
     }
