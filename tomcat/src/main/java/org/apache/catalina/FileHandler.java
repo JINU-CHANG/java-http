@@ -26,11 +26,15 @@ public class FileHandler implements Handler {
 
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setValue("HTTP/1.1 200 OK ");
-        httpResponse.setValue("Content-Type: text/html;charset=utf-8 ");
+        httpResponse.setValue(convertToFileContentType(resource));
         httpResponse.setValue("Content-Length: " + fileString.getBytes().length + " ");
         httpResponse.setValue("");
         httpResponse.setValue(fileString.trim());
 
         return httpResponse;
+    }
+
+    private String convertToFileContentType(String resource) { // TODO 얘의 역할이 맞나 .... ?
+        return "text/" + resource.split("\\.")[1] + ";charset=utf-8 ";
     }
 }
