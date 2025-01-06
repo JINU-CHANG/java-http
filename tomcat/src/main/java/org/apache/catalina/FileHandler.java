@@ -38,4 +38,9 @@ public class FileHandler implements Handler {
     private String convertToFileContentType(String resource) { // TODO 얘의 역할이 맞나 .... ?
         return "text/" + resource.split("\\.")[1] + ";charset=utf-8 ";
     }
+
+    @Override
+    public boolean canHandle(HttpRequest httpRequest) {
+        return httpRequest.getMethod().equals("GET") && httpRequest.getURI().matches(".*\\.[a-zA-Z0-9]+$");
+    }
 }

@@ -6,4 +6,5 @@ import org.apache.coyote.HttpResponse;
 public interface Handler {
 
     abstract HttpResponse handle(HttpRequest httpRequest);
+    abstract boolean canHandle(HttpRequest httpRequest);
 }

@@ -17,13 +17,9 @@ public class HandlerMapping {
     }
 
     public Handler findHandler(HttpRequest httpRequest) {
-        if (httpRequest.getMethod().equals("GET")) { // TODO ENUM으로 관리 & 테스트 코드
-            if (httpRequest.getURI().matches(".*\\.[a-zA-Z0-9]+$")) {
-                return handlers.get("FILE");
-            } else if (httpRequest.getURI().startsWith("\\login")) {
-                return handlers.get("LOGIN");
-            }
-        }
-        return handlers.get("DEFAULT");
+        return handlers.values().stream()
+                .filter(handler -> handler.canHandle(httpRequest))
+                .findAny()
+                .orElse(handlers.get("DEFAULT"));
     }
 }

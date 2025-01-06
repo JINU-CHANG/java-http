@@ -16,4 +16,9 @@ public class DefaultHandler implements Handler{
         httpResponse.setValue(responseBody);
         return httpResponse;
     }
+
+    @Override
+    public boolean canHandle(HttpRequest httpRequest) {
+        return false;
+    }
 }
