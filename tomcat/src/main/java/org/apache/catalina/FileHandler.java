@@ -8,15 +8,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.apache.coyote.StatusLine.HTTP_VERSION;
+import static org.apache.coyote.StatusLine.STATUS_CODE;
+import static org.apache.coyote.StatusLine.STATUS_MESSAGE;
+
 public class FileHandler implements Handler {
 
     private static final String DEFAULT_PATH = "static/";
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) {
-        String resource = httpRequest.getURI();
+        String uri = httpRequest.getURI();
 
-        URL url = FileHandler.class.getClassLoader().getResource(DEFAULT_PATH + resource);
+        URL url = FileHandler.class.getClassLoader().getResource(DEFAULT_PATH + uri);
         Path path = Paths.get(url.getPath());
         String fileString = "";
         try {
@@ -26,17 +30,29 @@ public class FileHandler implements Handler {
         }
 
         HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setValue("HTTP/1.1 200 OK ");
-        httpResponse.setValue("Content-Type: " + convertToFileContentType(resource) + " ");
-        httpResponse.setValue("Content-Length: " + fileString.getBytes().length + " ");
-        httpResponse.setValue("");
-        httpResponse.setValue(fileString.trim());
-
+        setStatusLine(httpResponse);
+        setHeader(httpResponse, uri, fileString);
+        setResponseBody(httpResponse, fileString);
         return httpResponse;
     }
 
-    private String convertToFileContentType(String resource) { // TODO 얘의 역할이 맞나 .... ?
-        return "text/" + resource.split("\\.")[1] + ";charset=utf-8 ";
+    private void setStatusLine(HttpResponse httpResponse) {
+        httpResponse.setStatusLine(HTTP_VERSION, "HTTP/1.1");
+        httpResponse.setStatusLine(STATUS_CODE, "200");
+        httpResponse.setStatusLine(STATUS_MESSAGE, "OK");
+    }
+
+    private void setHeader(HttpResponse httpResponse, String uri, String fileString) {
+        httpResponse.setHeader("Content-Type", convertToFileContentType(uri));
+        httpResponse.setHeader("Content-Length", String.valueOf(fileString.getBytes().length));
+    }
+
+    private String convertToFileContentType(String resource) {
+        return "text/" + resource.split("\\.")[1] + ";charset=utf-8";
+    }
+
+    private void setResponseBody(HttpResponse httpResponse, String value) {
+        httpResponse.setResponseBody(value);
     }
 
     @Override
