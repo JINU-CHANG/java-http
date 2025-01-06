@@ -12,8 +12,9 @@ public class FileHandler implements Handler {
 
     private static final String DEFAULT_PATH = "static/";
 
+    @Override
     public HttpResponse handle(HttpRequest httpRequest) {
-        String resource = httpRequest.getResource();
+        String resource = httpRequest.getURI();
 
         URL url = FileHandler.class.getClassLoader().getResource(DEFAULT_PATH + resource);
         Path path = Paths.get(url.getPath());
@@ -26,7 +27,7 @@ public class FileHandler implements Handler {
 
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setValue("HTTP/1.1 200 OK ");
-        httpResponse.setValue(convertToFileContentType(resource));
+        httpResponse.setValue("Content-Type: " + convertToFileContentType(resource) + " ");
         httpResponse.setValue("Content-Length: " + fileString.getBytes().length + " ");
         httpResponse.setValue("");
         httpResponse.setValue(fileString.trim());
