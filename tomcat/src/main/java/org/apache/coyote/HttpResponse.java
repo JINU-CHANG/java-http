@@ -36,6 +36,14 @@ public class HttpResponse {
         responseBody = value;
     }
 
+    public String getStatusCode() {
+        return statusLine.get(STATUS_CODE);
+    }
+
+    public String getHeader(String header) {
+        return headers.get(header);
+    }
+
     public String getHttpResponse() {
         StringBuilder responseBuilder = new StringBuilder();
         joinStatusLine(responseBuilder);
