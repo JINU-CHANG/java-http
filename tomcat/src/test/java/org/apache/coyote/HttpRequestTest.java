@@ -25,6 +25,22 @@ class HttpRequestTest {
         assertThat(httpRequest.getURI()).isEqualTo("/");
     }
 
+    @DisplayName("QueryString 저장 성공")
+    @Test
+    void saveQueryString() throws IOException {
+        // given
+
+        String mockHttpRequest = "GET http://localhost:8080/login?account=gugu&password=password HTTP/1.1\r\n";
+        InputStream inputStream = new ByteArrayInputStream(mockHttpRequest.getBytes());
+
+        // when
+        HttpRequest httpRequest = new HttpRequest(inputStream);
+
+        // then
+        assertThat(httpRequest.getParameter("account")).isEqualTo("gugu");
+        assertThat(httpRequest.getParameter("password")).isEqualTo("password");
+    }
+
     @DisplayName("RequestHeader 저장 성공")
     @Test
     void saveHeader() throws IOException {
