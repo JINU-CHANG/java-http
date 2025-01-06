@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.apache.coyote.RequestLine.*;
+
 public class HttpRequest {
 
     private static final String LINE_DELIMITER = " ";
@@ -35,25 +37,25 @@ public class HttpRequest {
 
     private void saveRequestLine(Map<String, String> request, String line) {
         String[] values = line.split(LINE_DELIMITER);
-        request.put("METHOD", values[0].trim());
-        request.put("URI", values[1].trim());
-        request.put("HTTP_VERSION", values[2].trim());
+        request.put(String.valueOf(METHOD), values[0]);
+        request.put(String.valueOf(URI), values[1]);
+        request.put(String.valueOf(HTTP_VERSION), values[2]);
     }
 
     private void saveHeaders(Map<String, String> request, String line) {
         String[] values = line.split(LINE_DELIMITER);
-        String header = values[0].split(":")[0].trim();
+        String header = values[0].split(":")[0];
         String headerValue = values[1].trim();
 
         request.put(header, headerValue);
     }
 
     public String getMethod() {
-       return request.get("METHOD");
+       return request.get(String.valueOf(METHOD));
     }
 
     public String getURI() {
-        return request.get("URI");
+        return request.get(String.valueOf(URI));
     }
 
     public String getHeader(String header) {
