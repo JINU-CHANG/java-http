@@ -18,7 +18,7 @@ public class RegisterHandler implements Handler {
         String email = values[2].split("=")[1];
 
         InMemoryUserRepository.save(new User(account, password, email));
-        return createHttpResponse("index.html");
+        return createHttpResponse("/index.html");
     }
 
     private HttpResponse createHttpResponse(String location) {

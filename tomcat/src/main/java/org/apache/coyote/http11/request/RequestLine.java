@@ -56,4 +56,8 @@ public class RequestLine {
     public String getParameter(String parameter) {
         return queryString.get(parameter);
     }
+
+    public void setURI(String uri) {
+        URI = uri;
+    }
 }

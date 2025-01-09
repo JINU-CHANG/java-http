@@ -7,18 +7,22 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import static org.apache.coyote.http11.response.StatusCode.OK;
 
 public class FileHandler implements Handler {
 
+    private static final Map<String, String> FILE_REQUEST_URI = Map.of(
+            "/register", "/register.html",
+            "/login", "/login.html");
     private static final String EXTENSION_DELIMITER = "\\.";
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) throws IOException {
         String uri = httpRequest.getURI();
 
-        URL url = FileHandler.class.getClassLoader().getResource("static/" + uri);
+        URL url = FileHandler.class.getClassLoader().getResource("static" + uri);
         Path path = Paths.get(url.getPath());
         String file = Files.readString(path);
 
@@ -45,6 +49,10 @@ public class FileHandler implements Handler {
 
     @Override
     public boolean canHandle(HttpRequest httpRequest) {
+        if (FILE_REQUEST_URI.containsKey(httpRequest.getURI())) {
+            httpRequest.setURI(FILE_REQUEST_URI.get(httpRequest.getURI()));
+        }
+
         return httpRequest.getMethod().equals("GET")
                 && httpRequest.getURI().matches(".*\\.[a-zA-Z0-9]+$");
     }

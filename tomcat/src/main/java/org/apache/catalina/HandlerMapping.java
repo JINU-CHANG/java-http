@@ -13,6 +13,7 @@ public class HandlerMapping {
         handlers.put("FILE", new FileHandler());
         handlers.put("DEFAULT", new DefaultHandler());
         handlers.put("LOGIN", new LoginHandler());
+        handlers.put("REGISTER", new RegisterHandler());
         this.handlers = handlers;
     }
 

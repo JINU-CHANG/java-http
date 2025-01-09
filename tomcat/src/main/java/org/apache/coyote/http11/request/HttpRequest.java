@@ -23,22 +23,26 @@ public class HttpRequest {
     }
 
     public String getMethod() {
-       return this.requestLine.getMethod();
+       return requestLine.getMethod();
     }
 
     public String getURI() {
-        return this.requestLine.getURI();
+        return requestLine.getURI();
     }
 
     public String getParameter(String parameter) {
-       return this.requestLine.getParameter(parameter);
+       return requestLine.getParameter(parameter);
     }
 
     public String getHeader(String header) {
-        return this.requestHeader.getHeader(header);
+        return requestHeader.getHeader(header);
     }
 
     public String getRequestBody() {
-        return this.requestBody.getRequestBody();
+        return requestBody.getRequestBody();
+    }
+
+    public void setURI(String uri) {
+        requestLine.setURI(uri);
     }
 }

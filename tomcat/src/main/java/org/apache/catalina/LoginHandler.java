@@ -16,9 +16,9 @@ public class LoginHandler implements Handler {
         Optional<User> user = InMemoryUserRepository.findByAccount(account);
 
         if (user.isPresent()) {
-            return createHttpResponse("index.html");
+            return createHttpResponse("/index.html");
         }
-        return createHttpResponse("401.html");
+        return createHttpResponse("/401.html");
     }
 
     private HttpResponse createHttpResponse(String location) {
