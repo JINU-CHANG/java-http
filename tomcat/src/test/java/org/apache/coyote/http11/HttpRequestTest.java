@@ -30,7 +30,6 @@ class HttpRequestTest {
     @Test
     void saveQueryString() throws IOException {
         // given
-
         String mockHttpRequest = "GET http://localhost:8080/login?account=gugu&password=password HTTP/1.1\r\n";
         InputStream inputStream = new ByteArrayInputStream(mockHttpRequest.getBytes());
 

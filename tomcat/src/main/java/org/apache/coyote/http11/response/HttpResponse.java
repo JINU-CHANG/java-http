@@ -71,4 +71,8 @@ public class HttpResponse {
         responseBuilder.append(LINE_DELIMITER)
                 .append(responseBody);
     }
+
+    public String getResponseBody() {
+        return responseBody;
+    }
 }
