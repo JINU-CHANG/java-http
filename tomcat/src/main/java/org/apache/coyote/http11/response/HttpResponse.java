@@ -1,48 +1,43 @@
 package org.apache.coyote.http11.response;
 
-import org.apache.coyote.http11.StatusLine;
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Map.Entry;
-
-import static org.apache.coyote.http11.StatusLine.HTTP_VERSION;
-import static org.apache.coyote.http11.StatusLine.STATUS_CODE;
-import static org.apache.coyote.http11.StatusLine.STATUS_MESSAGE;
 
 public class HttpResponse {
 
     private static final String LINE_DELIMITER = "\r\n";
     private static final String DELIMITER = " ";
 
-    private final Map<StatusLine, String> statusLine;
-    private final Map<String, String> headers;
+    private final StatusLine statusLine;
+    private final RequestHeader requestHeader;
     private String responseBody;
 
     public HttpResponse () {
-        this.statusLine = new EnumMap<>(StatusLine.class);
-        this.headers = new LinkedHashMap<>();
-        this.responseBody = "";
+        this.statusLine = new StatusLine();
+        this.requestHeader = new RequestHeader();
     }
 
-    public void setStatusLine(StatusLine key, String value) {
-        statusLine.put(key, value);
+    public void setHttpVersion(String httpVersion) {
+        statusLine.setHttpVersion(httpVersion);
+    }
+
+    public void setStatusCode(StatusCode statusCode) {
+        statusLine.setStatusCode(statusCode);
     }
 
     public void setHeader(String key, String value) {
-        headers.put(key, value);
+        requestHeader.setHeader(key, value);
     }
 
     public void setResponseBody(String value) {
         responseBody = value;
     }
 
-    public String getStatusCode() {
-        return statusLine.get(STATUS_CODE);
+    public int getStatusCode() {
+        return statusLine.getStatusCode();
     }
 
     public String getHeader(String header) {
-        return headers.get(header);
+        return requestHeader.getHeader(header);
     }
 
     public String getHttpResponse() {
@@ -54,14 +49,14 @@ public class HttpResponse {
     }
 
     private void joinStatusLine(StringBuilder responseBuilder) {
-        responseBuilder.append(statusLine.get(HTTP_VERSION)).append(DELIMITER)
-                .append(statusLine.get(STATUS_CODE)).append(DELIMITER)
-                .append(statusLine.get(STATUS_MESSAGE)).append(DELIMITER)
+        responseBuilder.append(statusLine.getHttpVersion()).append(DELIMITER)
+                .append(statusLine.getStatusCode()).append(DELIMITER)
+                .append(statusLine.getStatusMessage()).append(DELIMITER)
                 .append(LINE_DELIMITER);
     }
 
     private void joinHeader(StringBuilder responseBuilder) {
-        for (Entry<String, String> keyValue : headers.entrySet()) {
+        for (Entry<String, String> keyValue : requestHeader.getHeaders().entrySet()) {
             responseBuilder.append(keyValue.getKey()).append(": ")
                     .append(keyValue.getValue()).append(DELIMITER).append(LINE_DELIMITER);
         }

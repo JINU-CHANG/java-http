@@ -6,9 +6,7 @@ import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 import java.util.Optional;
 
-import static org.apache.coyote.http11.StatusLine.HTTP_VERSION;
-import static org.apache.coyote.http11.StatusLine.STATUS_CODE;
-import static org.apache.coyote.http11.StatusLine.STATUS_MESSAGE;
+import static org.apache.coyote.http11.response.StatusCode.FOUND;
 
 public class LoginHandler implements Handler {
 
@@ -17,26 +15,18 @@ public class LoginHandler implements Handler {
         String account = httpRequest.getParameter("account");
         Optional<User> user = InMemoryUserRepository.findByAccount(account);
 
-        HttpResponse httpResponse = new HttpResponse();
-        setStatusLine(httpResponse);
-
         if (user.isPresent()) {
-            setHeader(httpResponse, "index.html");
-        } else {
-            setHeader(httpResponse, "401.html");
+            return createHttpResponse("index.html");
         }
+        return createHttpResponse("401.html");
+    }
 
+    private HttpResponse createHttpResponse(String location) {
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setHttpVersion("HTTP/1.1");
+        httpResponse.setStatusCode(FOUND);
+        httpResponse.setHeader("Location", location);
         return httpResponse;
-    }
-
-    private void setStatusLine(HttpResponse httpResponse) {
-        httpResponse.setStatusLine(HTTP_VERSION, "HTTP/1.1");
-        httpResponse.setStatusLine(STATUS_CODE, "302");
-        httpResponse.setStatusLine(STATUS_MESSAGE, "FOUND");
-    }
-
-    private void setHeader(HttpResponse httpResponse, String value) {
-        httpResponse.setHeader("Location", value);
     }
 
     @Override

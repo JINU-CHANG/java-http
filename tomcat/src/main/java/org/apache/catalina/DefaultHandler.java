@@ -3,9 +3,7 @@ package org.apache.catalina;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 
-import static org.apache.coyote.http11.StatusLine.HTTP_VERSION;
-import static org.apache.coyote.http11.StatusLine.STATUS_CODE;
-import static org.apache.coyote.http11.StatusLine.STATUS_MESSAGE;
+import static org.apache.coyote.http11.response.StatusCode.OK;
 
 public class DefaultHandler implements Handler{
 
@@ -14,25 +12,12 @@ public class DefaultHandler implements Handler{
         String responseBody = "Hello world!";
 
         HttpResponse httpResponse = new HttpResponse();
-        setStatusLine(httpResponse);
-        setHeader(httpResponse, responseBody);
-        setResponseBody(httpResponse, responseBody);
-        return httpResponse;
-    }
-
-    private void setStatusLine(HttpResponse httpResponse) {
-        httpResponse.setStatusLine(HTTP_VERSION, "HTTP/1.1");
-        httpResponse.setStatusLine(STATUS_CODE, "200");
-        httpResponse.setStatusLine(STATUS_MESSAGE, "OK");
-    }
-
-    private void setHeader(HttpResponse httpResponse, String value) {
+        httpResponse.setHttpVersion("HTTP/1.1");
+        httpResponse.setStatusCode(OK);
         httpResponse.setHeader("Content-Type", "text/html;charset=utf-8");
-        httpResponse.setHeader("Content-Length", String.valueOf(value.length()));
-    }
-
-    private void setResponseBody(HttpResponse httpResponse, String value) {
-        httpResponse.setResponseBody(value);
+        httpResponse.setHeader("Content-Length", String.valueOf(responseBody.length()));
+        httpResponse.setResponseBody(responseBody);
+        return httpResponse;
     }
 
     @Override

@@ -32,7 +32,7 @@ class RegisterHandlerTest {
         HttpResponse httpResponse = registerHandler.handle(httpRequest);
 
         // then
-        assertThat(httpResponse.getStatusCode()).isEqualTo("302");
+        assertThat(httpResponse.getStatusCode()).isEqualTo(302);
         assertThat(httpResponse.getHeader("Location")).isEqualTo("index.html");
     }
 }

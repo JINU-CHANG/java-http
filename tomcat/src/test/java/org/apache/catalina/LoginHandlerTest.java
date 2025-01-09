@@ -26,7 +26,7 @@ class LoginHandlerTest {
         HttpResponse httpResponse = handler.handle(httpRequest);
 
         // then
-        assertThat(httpResponse.getStatusCode()).isEqualTo("302");
+        assertThat(httpResponse.getStatusCode()).isEqualTo(302);
         assertThat(httpResponse.getHeader("Location")).isEqualTo("index.html");
     }
 
@@ -41,7 +41,7 @@ class LoginHandlerTest {
         HttpResponse httpResponse = handler.handle(httpRequest);
 
         // then
-        assertThat(httpResponse.getStatusCode()).isEqualTo("302");
+        assertThat(httpResponse.getStatusCode()).isEqualTo(302);
         assertThat(httpResponse.getHeader("Location")).isEqualTo("401.html");
     }
 }

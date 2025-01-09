@@ -8,55 +8,44 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.apache.coyote.http11.StatusLine.HTTP_VERSION;
-import static org.apache.coyote.http11.StatusLine.STATUS_CODE;
-import static org.apache.coyote.http11.StatusLine.STATUS_MESSAGE;
+import static org.apache.coyote.http11.response.StatusCode.OK;
 
 public class FileHandler implements Handler {
 
-    private static final String DEFAULT_PATH = "static/";
+    private static final String EXTENSION_DELIMITER = "\\.";
 
     @Override
-    public HttpResponse handle(HttpRequest httpRequest) {
+    public HttpResponse handle(HttpRequest httpRequest) throws IOException {
         String uri = httpRequest.getURI();
 
-        URL url = FileHandler.class.getClassLoader().getResource(DEFAULT_PATH + uri);
+        URL url = FileHandler.class.getClassLoader().getResource("static/" + uri);
         Path path = Paths.get(url.getPath());
-        String fileString = "";
-        try {
-            fileString = Files.readString(path); // TODO : 예외처리 고민
-        } catch (IOException ioException) {
-            return new HttpResponse();
-        }
+        String file = Files.readString(path);
 
+        return createHttpResponse(uri, file);
+    }
+
+    private HttpResponse createHttpResponse(String uri, String file) {
         HttpResponse httpResponse = new HttpResponse();
-        setStatusLine(httpResponse);
-        setHeader(httpResponse, uri, fileString);
-        setResponseBody(httpResponse, fileString);
+        httpResponse.setHttpVersion("HTTP/1.1");
+        httpResponse.setStatusCode(OK);
+
+        String contentType = createFileContentType(uri);
+        String fileString = String.valueOf(file.getBytes().length);
+        httpResponse.setHeader("Content-Type", contentType);
+        httpResponse.setHeader("Content-Length", fileString);
+        httpResponse.setResponseBody(file);
         return httpResponse;
     }
 
-    private void setStatusLine(HttpResponse httpResponse) {
-        httpResponse.setStatusLine(HTTP_VERSION, "HTTP/1.1");
-        httpResponse.setStatusLine(STATUS_CODE, "200");
-        httpResponse.setStatusLine(STATUS_MESSAGE, "OK");
-    }
-
-    private void setHeader(HttpResponse httpResponse, String uri, String fileString) {
-        httpResponse.setHeader("Content-Type", convertToFileContentType(uri));
-        httpResponse.setHeader("Content-Length", String.valueOf(fileString.getBytes().length));
-    }
-
-    private String convertToFileContentType(String resource) {
-        return "text/" + resource.split("\\.")[1] + ";charset=utf-8";
-    }
-
-    private void setResponseBody(HttpResponse httpResponse, String value) {
-        httpResponse.setResponseBody(value);
+    private String createFileContentType(String resource) {
+        String extension = resource.split(EXTENSION_DELIMITER)[1];
+        return "text/" + extension + ";charset=utf-8";
     }
 
     @Override
     public boolean canHandle(HttpRequest httpRequest) {
-        return httpRequest.getMethod().equals("GET") && httpRequest.getURI().matches(".*\\.[a-zA-Z0-9]+$");
+        return httpRequest.getMethod().equals("GET")
+                && httpRequest.getURI().matches(".*\\.[a-zA-Z0-9]+$");
     }
 }
