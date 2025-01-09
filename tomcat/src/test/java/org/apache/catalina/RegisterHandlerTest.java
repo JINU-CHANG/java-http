@@ -33,6 +33,6 @@ class RegisterHandlerTest {
 
         // then
         assertThat(httpResponse.getStatusCode()).isEqualTo(302);
-        assertThat(httpResponse.getHeader("Location")).isEqualTo("index.html");
+        assertThat(httpResponse.getHeader("Location")).isEqualTo("/index.html");
     }
 }

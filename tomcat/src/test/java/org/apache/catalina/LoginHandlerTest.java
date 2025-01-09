@@ -27,7 +27,7 @@ class LoginHandlerTest {
 
         // then
         assertThat(httpResponse.getStatusCode()).isEqualTo(302);
-        assertThat(httpResponse.getHeader("Location")).isEqualTo("index.html");
+        assertThat(httpResponse.getHeader("Location")).isEqualTo("/index.html");
     }
 
     @DisplayName("로그인 실패시 401.html 리다이렉트")
@@ -42,6 +42,20 @@ class LoginHandlerTest {
 
         // then
         assertThat(httpResponse.getStatusCode()).isEqualTo(302);
-        assertThat(httpResponse.getHeader("Location")).isEqualTo("401.html");
+        assertThat(httpResponse.getHeader("Location")).isEqualTo("/401.html");
+    }
+
+    @DisplayName("로그인 성공시 쿠키 반환")
+    @Test
+    void login_success_cookie() throws IOException {
+        String loginSuccessURI = "GET http://localhost:8080/login?account=zeze&password=password HTTP/1.1\n";
+        InputStream inputStream = new ByteArrayInputStream(loginSuccessURI.getBytes());
+
+        // when
+        HttpRequest httpRequest = new HttpRequest(inputStream);
+        HttpResponse httpResponse = handler.handle(httpRequest);
+
+        // then
+        assertThat(httpResponse.getHeader("Set-Cookie")).isNotEmpty();
     }
 }

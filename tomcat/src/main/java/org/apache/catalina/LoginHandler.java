@@ -5,6 +5,7 @@ import com.techcourse.model.User;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.apache.coyote.http11.response.StatusCode.FOUND;
 
@@ -26,7 +27,12 @@ public class LoginHandler implements Handler {
         httpResponse.setHttpVersion("HTTP/1.1");
         httpResponse.setStatusCode(FOUND);
         httpResponse.setHeader("Location", location);
+        httpResponse.setHeader("Set-Cookie", createCookie());
         return httpResponse;
+    }
+
+    private String createCookie() {
+        return "JSESSIONID=" + UUID.randomUUID();
     }
 
     @Override
