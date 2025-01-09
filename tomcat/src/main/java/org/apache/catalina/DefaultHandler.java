@@ -1,11 +1,11 @@
 package org.apache.catalina;
 
-import org.apache.coyote.HttpRequest;
-import org.apache.coyote.HttpResponse;
+import org.apache.coyote.http11.request.HttpRequest;
+import org.apache.coyote.http11.response.HttpResponse;
 
-import static org.apache.coyote.StatusLine.HTTP_VERSION;
-import static org.apache.coyote.StatusLine.STATUS_CODE;
-import static org.apache.coyote.StatusLine.STATUS_MESSAGE;
+import static org.apache.coyote.http11.StatusLine.HTTP_VERSION;
+import static org.apache.coyote.http11.StatusLine.STATUS_CODE;
+import static org.apache.coyote.http11.StatusLine.STATUS_MESSAGE;
 
 public class DefaultHandler implements Handler{
 

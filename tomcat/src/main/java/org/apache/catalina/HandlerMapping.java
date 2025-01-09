@@ -1,6 +1,6 @@
 package org.apache.catalina;
 
-import org.apache.coyote.HttpRequest;
+import org.apache.coyote.http11.request.HttpRequest;
 import java.util.HashMap;
 import java.util.Map;
 

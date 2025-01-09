@@ -1,16 +1,16 @@
 package org.apache.catalina;
 
-import org.apache.coyote.HttpRequest;
-import org.apache.coyote.HttpResponse;
+import org.apache.coyote.http11.request.HttpRequest;
+import org.apache.coyote.http11.response.HttpResponse;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.apache.coyote.StatusLine.HTTP_VERSION;
-import static org.apache.coyote.StatusLine.STATUS_CODE;
-import static org.apache.coyote.StatusLine.STATUS_MESSAGE;
+import static org.apache.coyote.http11.StatusLine.HTTP_VERSION;
+import static org.apache.coyote.http11.StatusLine.STATUS_CODE;
+import static org.apache.coyote.http11.StatusLine.STATUS_MESSAGE;
 
 public class FileHandler implements Handler {
 
