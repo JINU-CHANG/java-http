@@ -6,14 +6,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class HttpRequest {
-
+    
     private final RequestLine requestLine;
     private final RequestHeader requestHeader;
+    private RequestBody requestBody;
 
     public HttpRequest(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         this.requestLine = new RequestLine(bufferedReader);
         this.requestHeader = new RequestHeader(bufferedReader);
+
+        if (getMethod().equals("POST")) {
+            int contentLength = Integer.parseInt(getHeader("Content-Length"));
+            this.requestBody = new RequestBody(bufferedReader, contentLength);
+        }
     }
 
     public String getMethod() {
@@ -30,5 +36,9 @@ public class HttpRequest {
 
     public String getHeader(String header) {
         return this.requestHeader.getHeader(header);
+    }
+
+    public String getRequestBody() {
+        return this.requestBody.getRequestBody();
     }
 }

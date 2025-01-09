@@ -54,4 +54,26 @@ class HttpRequestTest {
         // then
         assertThat(httpRequest.getHeader("Host")).isEqualTo("localhost:8080");
     }
+
+    @DisplayName("RequestBody 저장 성공")
+    @Test
+    void saveRequestBody() throws IOException {
+        // given
+        String mockRequestBody = "account=gugu&password=password&email=hkkang%40woowahan.com";
+        String mockHttpRequest = "POST /register HTTP/1.1\r\n"
+                + "Host: localhost:8080\r\n"
+                + "Connection: keep-alive\r\n"
+                + "Content-Length: 80\r\n"
+                + "Content-Type: application/x-www-form-urlencoded\r\n"
+                + "Accept: */*\r\n"
+                + "\r\n"
+                + mockRequestBody;
+        InputStream inputStream = new ByteArrayInputStream(mockHttpRequest.getBytes());
+
+        // when
+        HttpRequest httpRequest = new HttpRequest(inputStream);
+
+        // then
+        assertThat(httpRequest.getRequestBody()).isEqualTo(mockRequestBody);
+    }
 }
