@@ -8,12 +8,12 @@ public class HttpResponse {
     private static final String DELIMITER = " ";
 
     private final StatusLine statusLine;
-    private final RequestHeader requestHeader;
+    private final ResponseHeader requestHeader;
     private String responseBody;
 
     public HttpResponse () {
         this.statusLine = new StatusLine();
-        this.requestHeader = new RequestHeader();
+        this.requestHeader = new ResponseHeader();
     }
 
     public void setHttpVersion(String httpVersion) {
@@ -65,9 +65,5 @@ public class HttpResponse {
     private void joinResponseBody(StringBuilder responseBuilder) {
         responseBuilder.append(LINE_DELIMITER)
                 .append(responseBody);
-    }
-
-    public String getResponseBody() {
-        return responseBody;
     }
 }

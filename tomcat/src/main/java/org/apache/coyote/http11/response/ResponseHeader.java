@@ -3,11 +3,11 @@ package org.apache.coyote.http11.response;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class RequestHeader {
+public class ResponseHeader {
 
     private final Map<String, String> headers;
 
-    public RequestHeader() {
+    public ResponseHeader() {
         this.headers = new LinkedHashMap<>();
     }
 

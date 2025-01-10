@@ -3,14 +3,14 @@ package org.apache.coyote.http11;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HttpCookie {
+public class Cookies {
 
     private static final String COOKIE_DELIMITER = "; ";
     private static final String COOKIE_KEY_VALUE_DELIMITER = "=";
 
     private final Map<String, Cookie> cookies;
 
-    public HttpCookie(String line) {
+    public Cookies(String line) {
         this.cookies = new HashMap<>();
 
         String[] cookies = line.split(COOKIE_DELIMITER);

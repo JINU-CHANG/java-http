@@ -13,7 +13,7 @@ class HttpCookieTest {
         String JSESSIONID_KEY = "JSESSIONID";
         String JSESSIONID_VALUE = "656cef62-e3c4-40bc-a8df-94732920ed46";
 
-        HttpCookie cookie = new HttpCookie(
+        Cookies cookie = new Cookies(
                 "yummy_cookie=choco; tasty_cookie=strawberry; " + JSESSIONID_KEY + "=" + JSESSIONID_VALUE);
 
         // then
