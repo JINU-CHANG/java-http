@@ -16,7 +16,7 @@ public class LoginHandler implements Handler {
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) {
-        if (AuthExist(httpRequest)) {
+        if (isAuthExist(httpRequest)) {
             return createHttpResponse("/index.html", parseAuthInfo(httpRequest));
         }
 
@@ -30,7 +30,7 @@ public class LoginHandler implements Handler {
         return createHttpResponse("/401.html", null);
     }
 
-    private boolean AuthExist(HttpRequest httpRequest) {
+    private boolean isAuthExist(HttpRequest httpRequest) {
         String jsessionid = httpRequest.getCookieValue("JSESSIONID");
         if (jsessionid == null) return false;
 
