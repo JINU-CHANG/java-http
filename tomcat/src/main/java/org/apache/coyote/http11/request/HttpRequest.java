@@ -16,7 +16,7 @@ public class HttpRequest {
         this.requestLine = new RequestLine(bufferedReader);
         this.requestHeader = new RequestHeader(bufferedReader);
 
-        if (getMethod().equals("POST")) {
+        if (getMethod().equals("POST") && getHeader("Content-Length") != null) { // TODO
             int contentLength = Integer.parseInt(getHeader("Content-Length"));
             this.requestBody = new RequestBody(bufferedReader, contentLength);
         }
@@ -40,6 +40,10 @@ public class HttpRequest {
 
     public String getRequestBody() {
         return requestBody.getRequestBody();
+    }
+
+    public String getCookieValue(String header) {
+        return requestHeader.getCookieValue(header);
     }
 
     public void setURI(String uri) {

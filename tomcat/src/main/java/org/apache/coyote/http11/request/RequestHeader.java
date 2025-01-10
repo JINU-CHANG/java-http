@@ -37,4 +37,9 @@ public class RequestHeader {
     public String getHeader(String header) {
         return this.header.get(header);
     }
+
+    public String getCookieValue(String header) {
+        if (cookie == null) return null; // TODO null 리팩토링
+        return this.cookie.getValue(header);
+    }
 }

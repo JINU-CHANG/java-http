@@ -14,6 +14,10 @@ public class LoginHandler implements Handler {
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) {
+        if (AuthExist(httpRequest)) {
+            return createHttpResponse("/index.html", parseAuthInfo(httpRequest));
+        }
+
         String account = httpRequest.getParameter("account");
         Optional<User> user = InMemoryUserRepository.findByAccount(account);
 
@@ -22,6 +26,20 @@ public class LoginHandler implements Handler {
             return createHttpResponse("/index.html", authInfo);
         }
         return createHttpResponse("/401.html", null);
+    }
+
+    private boolean AuthExist(HttpRequest httpRequest) {
+        String jsessionid = httpRequest.getCookieValue("JSESSIONID");
+        if (jsessionid == null) return false;
+
+        Session session = SessionManager.findSession(jsessionid);
+        if (session != null) return true;
+        return false;
+    }
+
+    private String parseAuthInfo(HttpRequest httpRequest) {
+        String jsessionid = httpRequest.getCookieValue("JSESSIONID");
+        return SessionManager.findSession(jsessionid).getId();
     }
 
     private String saveAuthInfo(User user) {
