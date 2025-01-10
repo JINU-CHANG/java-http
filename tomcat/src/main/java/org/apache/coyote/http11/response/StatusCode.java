@@ -6,19 +6,11 @@ public enum StatusCode {
     FOUND(302, "FOUND"),
     ;
 
-    private final int statusCode;
-    private final String statusMessage;
+    public final int statusCode;
+    public final String statusMessage;
 
     StatusCode(int statusCode, String statusMessage) {
         this.statusCode = statusCode;
         this.statusMessage = statusMessage;
-    }
-
-    public int getStatusCode() {
-        return statusCode;
-    }
-
-    public String getStatusMessage() {
-        return statusMessage;
     }
 }

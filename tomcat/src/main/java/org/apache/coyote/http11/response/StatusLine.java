@@ -5,8 +5,7 @@ import org.apache.coyote.http11.common.HttpVersion;
 public class StatusLine {
 
     private HttpVersion httpVersion;
-    private int statusCode;
-    private String statusMessage;
+    private StatusCode statusCode;
 
     public StatusLine() {
     }
@@ -16,8 +15,7 @@ public class StatusLine {
     }
 
     public void setStatusCode(StatusCode statusCode) {
-        this.statusCode = statusCode.getStatusCode();
-        this.statusMessage = statusCode.getStatusMessage();
+        this.statusCode = statusCode;
     }
 
     public HttpVersion getHttpVersion() {
@@ -25,10 +23,10 @@ public class StatusLine {
     }
 
     public int getStatusCode() {
-        return statusCode;
+        return statusCode.statusCode;
     }
 
     public String getStatusMessage() {
-        return statusMessage;
+        return statusCode.statusMessage;
     }
 }
