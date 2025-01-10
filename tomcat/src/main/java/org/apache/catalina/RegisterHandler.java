@@ -5,6 +5,7 @@ import com.techcourse.model.User;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 
+import static org.apache.coyote.http11.HttpHeaderName.LOCATION;
 import static org.apache.coyote.http11.response.StatusCode.FOUND;
 
 public class RegisterHandler implements Handler {
@@ -25,7 +26,7 @@ public class RegisterHandler implements Handler {
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setHttpVersion("HTTP/1.1");
         httpResponse.setStatusCode(FOUND);
-        httpResponse.setHeader("Location", location);
+        httpResponse.setHeader(LOCATION, location);
         return httpResponse;
     }
 

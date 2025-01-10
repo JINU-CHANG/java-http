@@ -1,5 +1,6 @@
 package org.apache.coyote.http11.response;
 
+import org.apache.coyote.http11.HttpHeaderName;
 import java.util.Map.Entry;
 
 public class HttpResponse {
@@ -24,7 +25,7 @@ public class HttpResponse {
         statusLine.setStatusCode(statusCode);
     }
 
-    public void setHeader(String key, String value) {
+    public void setHeader(HttpHeaderName key, String value) {
         requestHeader.setHeader(key, value);
     }
 
@@ -36,7 +37,7 @@ public class HttpResponse {
         return statusLine.getStatusCode();
     }
 
-    public String getHeader(String header) {
+    public String getHeader(HttpHeaderName header) {
         return requestHeader.getHeader(header);
     }
 
@@ -56,8 +57,8 @@ public class HttpResponse {
     }
 
     private void joinHeader(StringBuilder responseBuilder) {
-        for (Entry<String, String> keyValue : requestHeader.getHeaders().entrySet()) {
-            responseBuilder.append(keyValue.getKey()).append(": ")
+        for (Entry<HttpHeaderName, String> keyValue : requestHeader.getHeaders().entrySet()) {
+            responseBuilder.append(keyValue.getKey().name).append(": ")
                     .append(keyValue.getValue()).append(DELIMITER).append(LINE_DELIMITER);
         }
     }

@@ -7,6 +7,7 @@ import org.apache.coyote.http11.response.HttpResponse;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.apache.coyote.http11.HttpHeaderName.LOCATION;
 import static org.apache.coyote.http11.HttpHeaderName.SET_COOKIE;
 import static org.apache.coyote.http11.response.StatusCode.FOUND;
 
@@ -55,8 +56,8 @@ public class LoginHandler implements Handler {
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setHttpVersion("HTTP/1.1");
         httpResponse.setStatusCode(FOUND);
-        httpResponse.setHeader("Location", location);
-        if (authInfo != null) httpResponse.setHeader(SET_COOKIE.name, createCookie(authInfo));
+        httpResponse.setHeader(LOCATION, location);
+        if (authInfo != null) httpResponse.setHeader(SET_COOKIE, createCookie(authInfo));
         return httpResponse;
     }
 

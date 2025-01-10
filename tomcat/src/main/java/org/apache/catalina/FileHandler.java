@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static org.apache.coyote.http11.HttpHeaderName.CONTENT_LENGTH;
+import static org.apache.coyote.http11.HttpHeaderName.CONTENT_TYPE;
 import static org.apache.coyote.http11.response.StatusCode.OK;
 
 public class FileHandler implements Handler {
@@ -36,8 +38,8 @@ public class FileHandler implements Handler {
 
         String contentType = createFileContentType(uri);
         String fileString = String.valueOf(file.getBytes().length);
-        httpResponse.setHeader("Content-Type", contentType);
-        httpResponse.setHeader("Content-Length", fileString);
+        httpResponse.setHeader(CONTENT_TYPE, contentType);
+        httpResponse.setHeader(CONTENT_LENGTH, fileString);
         httpResponse.setResponseBody(file);
         return httpResponse;
     }

@@ -1,25 +1,26 @@
 package org.apache.coyote.http11.response;
 
+import org.apache.coyote.http11.HttpHeaderName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ResponseHeader {
 
-    private final Map<String, String> headers;
+    private final Map<HttpHeaderName, String> headers;
 
     public ResponseHeader() {
         this.headers = new LinkedHashMap<>();
     }
 
-    public void setHeader(String key, String value) {
+    public void setHeader(HttpHeaderName key, String value) {
         headers.put(key, value);
     }
 
-    public String getHeader(String header) {
+    public String getHeader(HttpHeaderName header) {
         return headers.get(header);
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<HttpHeaderName, String> getHeaders() {
         return headers;
     }
 }
