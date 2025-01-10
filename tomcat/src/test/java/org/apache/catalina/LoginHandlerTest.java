@@ -8,7 +8,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.apache.coyote.http11.HttpHeaderName.SET_COOKIE;
+import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
+import static org.apache.coyote.http11.common.HttpHeaderName.SET_COOKIE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class LoginHandlerTest {
@@ -28,13 +29,13 @@ class LoginHandlerTest {
 
         // then
         assertThat(httpResponse.getStatusCode()).isEqualTo(302);
-        assertThat(httpResponse.getHeader("Location")).isEqualTo("/index.html");
+        assertThat(httpResponse.getHeader(LOCATION)).isEqualTo("/index.html");
     }
 
     @DisplayName("로그인 실패시 401.html 리다이렉트")
     @Test
     void login_fail_redirect() throws IOException {
-        String loginSuccessURI = "POST http://localhost:8080/login?account=zeze&password=password HTTP/1.1\n";
+        String loginSuccessURI = "POST http://localhost:8080/login?account=zezeze&password=password HTTP/1.1\n";
         InputStream inputStream = new ByteArrayInputStream(loginSuccessURI.getBytes());
 
         // when
@@ -43,13 +44,13 @@ class LoginHandlerTest {
 
         // then
         assertThat(httpResponse.getStatusCode()).isEqualTo(302);
-        assertThat(httpResponse.getHeader("Location")).isEqualTo("/401.html");
+        assertThat(httpResponse.getHeader(LOCATION)).isEqualTo("/401.html");
     }
 
     @DisplayName("로그인 성공시 쿠키 반환")
     @Test
     void login_success_cookie() throws IOException {
-        String loginSuccessURI = "POST http://localhost:8080/login?account=zeze&password=password HTTP/1.1\n";
+        String loginSuccessURI = "POST http://localhost:8080/login?account=gugu&password=password HTTP/1.1\n";
         InputStream inputStream = new ByteArrayInputStream(loginSuccessURI.getBytes());
 
         // when
@@ -57,7 +58,7 @@ class LoginHandlerTest {
         HttpResponse httpResponse = handler.handle(httpRequest);
 
         // then
-        assertThat(httpResponse.getHeader("Set-Cookie")).isNotEmpty();
+        assertThat(httpResponse.getHeader(SET_COOKIE)).isNotEmpty();
     }
 
     @DisplayName("로그인 성공시 세션 저장")
@@ -86,12 +87,12 @@ class LoginHandlerTest {
                 + "Content-Type: application/x-www-form-urlencoded\n"
                 + "Accept: */*\n"
                 + "\n"
-                + "account=gugu&password=password&email=hkkang%40woowahan.com";
+                + "account=zeze&password=password&email=hkkang%40woowahan.com";
         InputStream registerInputStream = new ByteArrayInputStream(registerSuccessURI.getBytes());
         RegisterHandler registerHandler = new RegisterHandler();
         registerHandler.handle(new HttpRequest(registerInputStream));
 
-        String loginSuccessURI = "POST http://localhost:8080/login?account=gugu&password=password HTTP/1.1\n"
+        String loginSuccessURI = "POST http://localhost:8080/login?account=zeze&password=password HTTP/1.1\n"
                 + "Host: localhost:8080\n"
                 + "Connection: keep-alive\n"
                 + "Accept: */*\n";
@@ -99,7 +100,7 @@ class LoginHandlerTest {
         HttpResponse loginResponse = handler.handle(new HttpRequest(loginInputStream));
         String jsessionid = parseJSESSIONCookieValue(loginResponse);
 
-        String loginSuccessURI2 = "POST http://localhost:8080/login?account=gugu&password=password HTTP/1.1\n"
+        String loginSuccessURI2 = "POST http://localhost:8080/login?account=zeze&password=password HTTP/1.1\n"
                 + "Host: localhost:8080\n"
                 + "Connection: keep-alive\n"
                 + "Accept: */*\n"
@@ -115,7 +116,7 @@ class LoginHandlerTest {
     }
 
     private String parseJSESSIONCookieValue(HttpResponse httpResponse) {
-        String setCookieValue = httpResponse.getHeader(SET_COOKIE.name);
+        String setCookieValue = httpResponse.getHeader(SET_COOKIE);
         String cookieKeyValue = setCookieValue.split("; ")[0];
         return cookieKeyValue.split("=")[1];
     }

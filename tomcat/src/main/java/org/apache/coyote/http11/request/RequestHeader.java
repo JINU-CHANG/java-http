@@ -1,18 +1,17 @@
 package org.apache.coyote.http11.request;
 
-import org.apache.coyote.http11.Cookies;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.apache.coyote.http11.common.HttpHeaderName.*;
+
 public class RequestHeader {
 
-    private static final String LINE_DELIMITER = " ";
-    private static final String HEADER_VALUE_DELIMITER = ":";
+    private static final String HEADER_VALUE_DELIMITER = ": ";
 
-    private Cookies cookie;
     private final Map<String, String> header = new LinkedHashMap<>();
 
     public RequestHeader(BufferedReader bufferedReader) throws IOException {
@@ -22,24 +21,26 @@ public class RequestHeader {
     private void saveHeaders(BufferedReader bufferedReader) throws IOException {
         String headerLine = "";
         while (!Objects.equals(headerLine = bufferedReader.readLine(), "") && headerLine != null) {
-            String[] values = headerLine.split(LINE_DELIMITER);
-            String header = values[0].split(HEADER_VALUE_DELIMITER)[0];
+            String[] values = headerLine.split(HEADER_VALUE_DELIMITER);
+            String headerName = values[0];
             String headerValue = values[1].trim();
 
-            if (header.equals("Cookie")) { // TODO 리팩토링 고민
-                this.cookie = new Cookies(headerLine);
-                continue;
-            }
-            this.header.put(header, headerValue);
+            this.header.put(headerName, headerValue);
         }
     }
 
-    public String getHeader(String header) {
-        return this.header.get(header);
+    public String getHeader(String name) {
+        return this.header.get(name);
     }
 
-    public String getCookieValue(String header) {
-        if (cookie == null) return null; // TODO null 리팩토링
-        return this.cookie.getValue(header);
+    public Cookies getCookies() { // TODO Cookie 클래스를 필드로 두는 것, Map 데이터로 두는 것 ,, ?
+        String result = getHeader(COOKIE.name);
+        if (result == null) return null; // TODO null 관리
+        return new Cookies(result);
+    }
+
+    public String getCookieValue(String key) {
+        if (getCookies() == null) return null;
+        return getCookies().getValue(key);
     }
 }

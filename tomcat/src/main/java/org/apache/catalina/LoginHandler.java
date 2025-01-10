@@ -7,8 +7,9 @@ import org.apache.coyote.http11.response.HttpResponse;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.apache.coyote.http11.HttpHeaderName.LOCATION;
-import static org.apache.coyote.http11.HttpHeaderName.SET_COOKIE;
+import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
+import static org.apache.coyote.http11.common.HttpHeaderName.SET_COOKIE;
+import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.FOUND;
 
 public class LoginHandler implements Handler {
@@ -54,7 +55,7 @@ public class LoginHandler implements Handler {
 
     private HttpResponse createHttpResponse(String location, String authInfo) {
         HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setHttpVersion("HTTP/1.1");
+        httpResponse.setHttpVersion(HTTP_VERSION11);
         httpResponse.setStatusCode(FOUND);
         httpResponse.setHeader(LOCATION, location);
         if (authInfo != null) httpResponse.setHeader(SET_COOKIE, createCookie(authInfo));
@@ -67,6 +68,6 @@ public class LoginHandler implements Handler {
 
     @Override
     public boolean canHandle(HttpRequest httpRequest) {
-        return httpRequest.getURI().contains("/login?");
+        return httpRequest.getUri().contains("/login?");
     }
 }

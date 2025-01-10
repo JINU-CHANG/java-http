@@ -9,8 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import static org.apache.coyote.http11.HttpHeaderName.CONTENT_LENGTH;
-import static org.apache.coyote.http11.HttpHeaderName.CONTENT_TYPE;
+import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
+import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
+import static org.apache.coyote.http11.common.HttpMethodName.GET;
+import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.OK;
 
 public class FileHandler implements Handler {
@@ -22,7 +24,7 @@ public class FileHandler implements Handler {
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) throws IOException {
-        String uri = httpRequest.getURI();
+        String uri = httpRequest.getUri();
 
         URL url = FileHandler.class.getClassLoader().getResource("static" + uri);
         Path path = Paths.get(url.getPath());
@@ -33,7 +35,7 @@ public class FileHandler implements Handler {
 
     private HttpResponse createHttpResponse(String uri, String file) {
         HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setHttpVersion("HTTP/1.1");
+        httpResponse.setHttpVersion(HTTP_VERSION11);
         httpResponse.setStatusCode(OK);
 
         String contentType = createFileContentType(uri);
@@ -51,11 +53,11 @@ public class FileHandler implements Handler {
 
     @Override
     public boolean canHandle(HttpRequest httpRequest) {
-        if (FILE_REQUEST_URI.containsKey(httpRequest.getURI())) {
-            httpRequest.setURI(FILE_REQUEST_URI.get(httpRequest.getURI()));
+        if (FILE_REQUEST_URI.containsKey(httpRequest.getUri())) {
+            httpRequest.setUri(FILE_REQUEST_URI.get(httpRequest.getUri()));
         }
 
-        return httpRequest.getMethod().equals("GET")
-                && httpRequest.getURI().matches(".*\\.[a-zA-Z0-9]+$");
+        return httpRequest.getMethod().equals(GET)
+                && httpRequest.getUri().matches(".*\\.[a-zA-Z0-9]+$");
     }
 }

@@ -1,15 +1,17 @@
 package org.apache.coyote.http11.response;
 
+import org.apache.coyote.http11.common.HttpVersion;
+
 public class StatusLine {
 
-    private String httpVersion;
+    private HttpVersion httpVersion;
     private int statusCode;
     private String statusMessage;
 
     public StatusLine() {
     }
 
-    public void setHttpVersion(String httpVersion) {
+    public void setHttpVersion(HttpVersion httpVersion) {
         this.httpVersion = httpVersion;
     }
 
@@ -18,7 +20,7 @@ public class StatusLine {
         this.statusMessage = statusCode.getStatusMessage();
     }
 
-    public String getHttpVersion() {
+    public HttpVersion getHttpVersion() {
         return httpVersion;
     }
 

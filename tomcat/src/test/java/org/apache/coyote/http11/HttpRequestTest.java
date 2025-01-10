@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.apache.coyote.http11.common.HttpMethodName.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpRequestTest {
@@ -22,8 +23,8 @@ class HttpRequestTest {
         HttpRequest httpRequest = new HttpRequest(inputStream);
 
         // then
-        assertThat(httpRequest.getMethod()).isEqualTo("GET");
-        assertThat(httpRequest.getURI()).isEqualTo("/");
+        assertThat(httpRequest.getMethod()).isEqualTo(GET);
+        assertThat(httpRequest.getUri()).isEqualTo("/");
     }
 
     @DisplayName("QueryString 저장 성공")

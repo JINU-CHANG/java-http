@@ -3,8 +3,9 @@ package org.apache.catalina;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 
-import static org.apache.coyote.http11.HttpHeaderName.CONTENT_LENGTH;
-import static org.apache.coyote.http11.HttpHeaderName.CONTENT_TYPE;
+import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
+import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
+import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.OK;
 
 public class DefaultHandler implements Handler{
@@ -14,7 +15,7 @@ public class DefaultHandler implements Handler{
         String responseBody = "Hello world!";
 
         HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setHttpVersion("HTTP/1.1");
+        httpResponse.setHttpVersion(HTTP_VERSION11);
         httpResponse.setStatusCode(OK);
         httpResponse.setHeader(CONTENT_TYPE, "text/html;charset=utf-8");
         httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(responseBody.length()));

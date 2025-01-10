@@ -1,6 +1,6 @@
 package org.apache.coyote.http11.response;
 
-import org.apache.coyote.http11.HttpHeaderName;
+import org.apache.coyote.http11.common.HttpHeaderName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

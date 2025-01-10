@@ -1,9 +1,13 @@
 package org.apache.coyote.http11.request;
 
+import org.apache.coyote.http11.common.HttpMethodName;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
+import static org.apache.coyote.http11.common.HttpMethodName.POST;
 
 public class HttpRequest {
     
@@ -16,37 +20,41 @@ public class HttpRequest {
         this.requestLine = new RequestLine(bufferedReader);
         this.requestHeader = new RequestHeader(bufferedReader);
 
-        if (getMethod().equals("POST") && getHeader("Content-Length") != null) { // TODO
-            int contentLength = Integer.parseInt(getHeader("Content-Length"));
+        if (isRequestBodyExist()) {
+            int contentLength = Integer.parseInt(getHeader(CONTENT_LENGTH.name));
             this.requestBody = new RequestBody(bufferedReader, contentLength);
         }
     }
 
-    public String getMethod() {
+    private boolean isRequestBodyExist() {
+        return getMethod().equals(POST) && getHeader(CONTENT_LENGTH.name) != null;
+    }
+
+    public HttpMethodName getMethod() {
        return requestLine.getMethod();
     }
 
-    public String getURI() {
-        return requestLine.getURI();
+    public String getUri() {
+        return requestLine.getUri();
     }
 
     public String getParameter(String parameter) {
        return requestLine.getParameter(parameter);
     }
 
-    public String getHeader(String header) {
-        return requestHeader.getHeader(header);
+    public String getHeader(String name) {
+        return requestHeader.getHeader(name);
     }
 
     public String getRequestBody() {
         return requestBody.getRequestBody();
     }
 
-    public String getCookieValue(String header) {
-        return requestHeader.getCookieValue(header);
+    public String getCookieValue(String key) {
+        return requestHeader.getCookieValue(key);
     }
 
-    public void setURI(String uri) {
-        requestLine.setURI(uri);
+    public void setUri(String uri) {
+        requestLine.setUri(uri);
     }
 }

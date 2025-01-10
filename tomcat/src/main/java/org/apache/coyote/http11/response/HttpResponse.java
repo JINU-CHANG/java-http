@@ -1,6 +1,7 @@
 package org.apache.coyote.http11.response;
 
-import org.apache.coyote.http11.HttpHeaderName;
+import org.apache.coyote.http11.common.HttpHeaderName;
+import org.apache.coyote.http11.common.HttpVersion;
 import java.util.Map.Entry;
 
 public class HttpResponse {
@@ -17,7 +18,7 @@ public class HttpResponse {
         this.requestHeader = new ResponseHeader();
     }
 
-    public void setHttpVersion(String httpVersion) {
+    public void setHttpVersion(HttpVersion httpVersion) {
         statusLine.setHttpVersion(httpVersion);
     }
 
@@ -50,7 +51,7 @@ public class HttpResponse {
     }
 
     private void joinStatusLine(StringBuilder responseBuilder) {
-        responseBuilder.append(statusLine.getHttpVersion()).append(DELIMITER)
+        responseBuilder.append(statusLine.getHttpVersion().value).append(DELIMITER)
                 .append(statusLine.getStatusCode()).append(DELIMITER)
                 .append(statusLine.getStatusMessage()).append(DELIMITER)
                 .append(LINE_DELIMITER);

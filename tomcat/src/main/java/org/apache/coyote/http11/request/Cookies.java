@@ -1,5 +1,6 @@
-package org.apache.coyote.http11;
+package org.apache.coyote.http11.request;
 
+import org.apache.coyote.http11.common.Cookie;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,8 @@ public class Cookies {
         }
     }
 
-    public String getValue(String cookie) {
-        return cookies.get(cookie).getValue();
+    public String getValue(String key) {
+        if (!cookies.containsKey(key)) return null;
+        return cookies.get(key).getValue();
     }
 }

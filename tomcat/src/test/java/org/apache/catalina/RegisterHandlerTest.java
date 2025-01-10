@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RegisterHandlerTest {
@@ -33,6 +34,6 @@ class RegisterHandlerTest {
 
         // then
         assertThat(httpResponse.getStatusCode()).isEqualTo(302);
-        assertThat(httpResponse.getHeader("Location")).isEqualTo("/index.html");
+        assertThat(httpResponse.getHeader(LOCATION)).isEqualTo("/index.html");
     }
 }

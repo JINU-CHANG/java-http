@@ -1,10 +1,11 @@
 package org.apache.coyote.http11;
 
+import org.apache.coyote.http11.request.Cookies;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class HttpCookieTest {
+class CookiesTest {
 
     @DisplayName("쿠키 저장 성공")
     @Test
