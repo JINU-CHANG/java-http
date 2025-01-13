@@ -3,7 +3,7 @@ package com.techcourse.controller;
 import com.techcourse.db.InMemoryUserRepository;
 import com.techcourse.model.User;
 import org.apache.catalina.FileResolver;
-import org.apache.catalina.controller.Controller;
+import org.apache.catalina.controller.AbstractController;
 import org.apache.catalina.session.Session;
 import org.apache.catalina.session.SessionManager;
 import org.apache.coyote.http11.request.HttpRequest;
@@ -15,23 +15,13 @@ import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
 import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
 import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
 import static org.apache.coyote.http11.common.HttpHeaderName.SET_COOKIE;
-import static org.apache.coyote.http11.common.HttpMethodName.GET;
-import static org.apache.coyote.http11.common.HttpMethodName.POST;
 import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.FOUND;
 import static org.apache.coyote.http11.response.StatusCode.OK;
 
-public class LoginController implements Controller {
+public class LoginController extends AbstractController {
 
     @Override
-    public void service(HttpRequest request, HttpResponse response) throws Exception {
-        if (request.getMethod().equals(GET)) {
-            doGet(request, response);
-        } else if (request.getMethod().equals(POST)) {
-            doPost(request, response);
-        }
-    }
-
     protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
         String uri = request.getUri();
         if (!request.getUri().contains(".")) {
@@ -47,11 +37,12 @@ public class LoginController implements Controller {
         response.setStatusCode(OK);
 
         String fileString = String.valueOf(file.getBytes().length);
-        response.setHeader(CONTENT_TYPE, "text/html; charset=utf-8");
+        response.setHeader(CONTENT_TYPE, "text/html;charset=utf-8");
         response.setHeader(CONTENT_LENGTH, fileString);
         response.setResponseBody(file);
     }
 
+    @Override
     protected void doPost(HttpRequest request, HttpResponse response) {
         if (isAuthExist(request)) {
             createPostHttpResponse(response,"/index.html", parseAuthInfo(request));

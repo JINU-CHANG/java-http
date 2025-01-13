@@ -1,6 +1,6 @@
 package com.techcourse.controller;
 
-import org.apache.catalina.controller.Controller;
+import org.apache.catalina.controller.AbstractController;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 
@@ -9,13 +9,9 @@ import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
 import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.OK;
 
-public class DefaultController implements Controller {
+public class DefaultController extends AbstractController {
 
     @Override
-    public void service(HttpRequest request, HttpResponse response) throws Exception {
-        doGet(request, response);
-    }
-
     protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
         String responseBody = "Hello world!";
 

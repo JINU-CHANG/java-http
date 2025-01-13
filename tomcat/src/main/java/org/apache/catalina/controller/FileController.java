@@ -10,15 +10,11 @@ import static org.apache.coyote.http11.common.HttpMethodName.GET;
 import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.OK;
 
-public class FileController implements Controller {
+public class FileController extends AbstractController {
 
     private static final String EXTENSION_DELIMITER = "\\.";
 
     @Override
-    public void service(HttpRequest request, HttpResponse response) throws Exception {
-        doGet(request, response);
-    }
-
     protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
         String uri = request.getUri();
         String file = FileResolver.resolve(uri);
@@ -38,7 +34,7 @@ public class FileController implements Controller {
 
     private String createFileContentType(String resource) {
         String extension = resource.split(EXTENSION_DELIMITER)[1];
-        return "text/" + extension + "; charset=utf-8";
+        return "text/" + extension + ";charset=utf-8";
     }
 
     @Override
