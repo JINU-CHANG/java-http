@@ -6,6 +6,7 @@ import org.apache.catalina.controller.Controller;
 import org.apache.catalina.session.SessionManager;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
@@ -129,5 +130,21 @@ class LoginControllerTest {
         String setCookieValue = httpResponse.getHeader(SET_COOKIE);
         String cookieKeyValue = setCookieValue.split("; ")[0];
         return cookieKeyValue.split("=")[1];
+    }
+
+    @DisplayName("/login 요청시 login.html 파일 반환")
+    @Test
+    void getLoginPage() throws Exception {
+        // given
+        LoginController loginController = new LoginController();
+        String mockHttpRequest = "GET /login HTTP/1.1\n";
+        InputStream inputStream = new ByteArrayInputStream(mockHttpRequest.getBytes());
+        HttpRequest httpRequest = new HttpRequest(inputStream);
+
+        // when & then
+        HttpResponse httpResponse = new HttpResponse();
+        loginController.service(httpRequest, httpResponse);
+
+        Assertions.assertThat(httpResponse.getResponseBody()).isNotEmpty();
     }
 }

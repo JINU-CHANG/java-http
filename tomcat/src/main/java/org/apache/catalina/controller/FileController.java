@@ -1,12 +1,8 @@
 package org.apache.catalina.controller;
 
+import org.apache.catalina.FileResolver;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
 
 import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
 import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
@@ -16,9 +12,6 @@ import static org.apache.coyote.http11.response.StatusCode.OK;
 
 public class FileController implements Controller {
 
-    private static final Map<String, String> FILE_REQUEST_URI = Map.of(
-            "/register", "/register.html",
-            "/login", "/login.html");
     private static final String EXTENSION_DELIMITER = "\\.";
 
     @Override
@@ -28,11 +21,7 @@ public class FileController implements Controller {
 
     protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
         String uri = request.getUri();
-
-        URL url = FileController.class.getClassLoader().getResource("static" + uri);
-        Path path = Paths.get(url.getPath());
-        String file = Files.readString(path);
-
+        String file = FileResolver.resolve(uri);
         createHttpResponse(response, uri, file);
     }
 
@@ -49,15 +38,11 @@ public class FileController implements Controller {
 
     private String createFileContentType(String resource) {
         String extension = resource.split(EXTENSION_DELIMITER)[1];
-        return "text/" + extension + ";charset=utf-8";
+        return "text/" + extension + "; charset=utf-8";
     }
 
     @Override
     public boolean canHandle(HttpRequest httpRequest) {
-        if (FILE_REQUEST_URI.containsKey(httpRequest.getUri())) {
-            httpRequest.setUri(FILE_REQUEST_URI.get(httpRequest.getUri()));
-        }
-
         return httpRequest.getMethod().equals(GET)
                 && httpRequest.getUri().matches(".*\\.[a-zA-Z0-9]+$");
     }

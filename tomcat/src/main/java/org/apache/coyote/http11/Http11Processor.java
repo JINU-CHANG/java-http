@@ -14,13 +14,10 @@ import java.net.Socket;
 public class Http11Processor implements Runnable, Processor {
 
     private static final Logger log = LoggerFactory.getLogger(Http11Processor.class);
-
-    private final RequestMapping requestMapping;
     private final Socket connection;
 
     public Http11Processor(final Socket connection) {
         this.connection = connection;
-        this.requestMapping = new RequestMapping();
     }
 
     @Override
@@ -35,7 +32,7 @@ public class Http11Processor implements Runnable, Processor {
              OutputStream outputStream = connection.getOutputStream()) {
 
             HttpRequest request = new HttpRequest(inputStream);
-            Controller controller = requestMapping.findServlet(request);
+            Controller controller = RequestMapping.findController(request);
             HttpResponse response = new HttpResponse();
             controller.service(request, response);
 

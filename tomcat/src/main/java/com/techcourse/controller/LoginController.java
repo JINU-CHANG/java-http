@@ -2,6 +2,7 @@ package com.techcourse.controller;
 
 import com.techcourse.db.InMemoryUserRepository;
 import com.techcourse.model.User;
+import org.apache.catalina.FileResolver;
 import org.apache.catalina.controller.Controller;
 import org.apache.catalina.session.Session;
 import org.apache.catalina.session.SessionManager;
@@ -10,21 +11,50 @@ import org.apache.coyote.http11.response.HttpResponse;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
+import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
 import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
 import static org.apache.coyote.http11.common.HttpHeaderName.SET_COOKIE;
+import static org.apache.coyote.http11.common.HttpMethodName.GET;
+import static org.apache.coyote.http11.common.HttpMethodName.POST;
 import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.FOUND;
+import static org.apache.coyote.http11.response.StatusCode.OK;
 
 public class LoginController implements Controller {
 
     @Override
     public void service(HttpRequest request, HttpResponse response) throws Exception {
-        doPost(request, response);
+        if (request.getMethod().equals(GET)) {
+            doGet(request, response);
+        } else if (request.getMethod().equals(POST)) {
+            doPost(request, response);
+        }
     }
 
-    protected void doPost(HttpRequest request, HttpResponse response) throws Exception {
+    protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
+        String uri = request.getUri();
+        if (!request.getUri().contains(".")) {
+            uri = uri + ".html";
+        }
+
+        String file = FileResolver.resolve(uri);
+        createGetHttpResponse(response, file);
+    }
+
+    private void createGetHttpResponse(HttpResponse response, String file) {
+        response.setHttpVersion(HTTP_VERSION11);
+        response.setStatusCode(OK);
+
+        String fileString = String.valueOf(file.getBytes().length);
+        response.setHeader(CONTENT_TYPE, "text/html; charset=utf-8");
+        response.setHeader(CONTENT_LENGTH, fileString);
+        response.setResponseBody(file);
+    }
+
+    protected void doPost(HttpRequest request, HttpResponse response) {
         if (isAuthExist(request)) {
-            createHttpResponse(response,"/index.html", parseAuthInfo(request));
+            createPostHttpResponse(response,"/index.html", parseAuthInfo(request));
             return;
         }
 
@@ -33,10 +63,10 @@ public class LoginController implements Controller {
 
         if (user.isPresent()) {
             String authInfo = saveAuthInfo(user.get());
-            createHttpResponse(response,"/index.html", authInfo);
+            createPostHttpResponse(response,"/index.html", authInfo);
             return;
         }
-        createHttpResponse(response,"/401.html", null);
+        createPostHttpResponse(response,"/401.html", null);
     }
 
     private boolean isAuthExist(HttpRequest httpRequest) {
@@ -62,7 +92,7 @@ public class LoginController implements Controller {
         return uuid.toString();
     }
 
-    private void createHttpResponse(HttpResponse response, String location, String authInfo) {
+    private void createPostHttpResponse(HttpResponse response, String location, String authInfo) {
         response.setHttpVersion(HTTP_VERSION11);
         response.setStatusCode(FOUND);
         response.setHeader(LOCATION, location);
@@ -75,6 +105,6 @@ public class LoginController implements Controller {
 
     @Override
     public boolean canHandle(HttpRequest httpRequest) {
-        return httpRequest.getUri().contains("/login?");
+        return httpRequest.getUri().contains("/login");
     }
 }

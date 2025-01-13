@@ -58,8 +58,4 @@ public class HttpRequest {
     public String getCookieValue(String key) {
         return requestHeader.getCookieValue(key);
     }
-
-    public void setUri(String uri) {
-        requestLine.setUri(uri);
-    }
 }
