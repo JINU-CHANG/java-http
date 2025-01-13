@@ -1,5 +1,6 @@
-package org.apache.catalina;
+package com.techcourse.handler;
 
+import org.apache.catalina.handler.Handler;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 
@@ -8,7 +9,7 @@ import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
 import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.OK;
 
-public class DefaultHandler implements Handler{
+public class DefaultHandler implements Handler {
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) {

@@ -15,14 +15,19 @@ public class HttpRequest {
     private final RequestHeader requestHeader;
     private RequestBody requestBody;
 
-    public HttpRequest(InputStream inputStream) throws IOException {
+    public HttpRequest(InputStream inputStream) {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        this.requestLine = new RequestLine(bufferedReader);
-        this.requestHeader = new RequestHeader(bufferedReader);
 
-        if (isRequestBodyExist()) {
-            int contentLength = Integer.parseInt(getHeader(CONTENT_LENGTH.name));
-            this.requestBody = new RequestBody(bufferedReader, contentLength);
+        try {
+            this.requestLine = new RequestLine(bufferedReader);
+            this.requestHeader = new RequestHeader(bufferedReader);
+
+            if (isRequestBodyExist()) {
+                int contentLength = Integer.parseInt(getHeader(CONTENT_LENGTH.name));
+                this.requestBody = new RequestBody(bufferedReader, contentLength);
+            }
+        } catch (IOException ioException) {
+            throw new IllegalArgumentException("HTTP 요청이 잘못되었습니다.", ioException);
         }
     }
 

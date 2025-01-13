@@ -1,8 +1,8 @@
 package org.apache.coyote.http11;
 
 import com.techcourse.exception.UncheckedServletException;
-import org.apache.catalina.Handler;
-import org.apache.catalina.HandlerMapping;
+import org.apache.catalina.handler.Handler;
+import org.apache.catalina.handler.HandlerMapping;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.Processor;
 import org.apache.coyote.http11.response.HttpResponse;

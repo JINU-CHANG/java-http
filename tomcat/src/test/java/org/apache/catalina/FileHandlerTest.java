@@ -1,5 +1,6 @@
 package org.apache.catalina;
 
+import org.apache.catalina.handler.FileHandler;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

@@ -1,5 +1,6 @@
 package org.apache.catalina;
 
+import com.techcourse.handler.RegisterHandler;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 import org.junit.jupiter.api.DisplayName;

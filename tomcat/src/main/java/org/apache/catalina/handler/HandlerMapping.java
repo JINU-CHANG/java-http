@@ -1,5 +1,8 @@
-package org.apache.catalina;
+package org.apache.catalina.handler;
 
+import com.techcourse.handler.DefaultHandler;
+import com.techcourse.handler.LoginHandler;
+import com.techcourse.handler.RegisterHandler;
 import org.apache.coyote.http11.request.HttpRequest;
 import java.util.HashMap;
 import java.util.Map;
