@@ -1,35 +1,35 @@
 package org.apache.catalina;
 
-import com.techcourse.handler.LoginHandler;
-import com.techcourse.handler.RegisterHandler;
-import org.apache.catalina.handler.Handler;
+import com.techcourse.controller.LoginController;
+import com.techcourse.controller.RegisterController;
+import org.apache.catalina.controller.Controller;
 import org.apache.catalina.session.SessionManager;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
 import static org.apache.coyote.http11.common.HttpHeaderName.SET_COOKIE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LoginHandlerTest {
+class LoginControllerTest {
 
-    private final Handler handler = new LoginHandler();
+    private final Controller controller = new LoginController();
 
     @DisplayName("로그인 성공시 index.html 리다이렉트")
     @Test
-    void login_success_redirect() throws IOException {
+    void login_success_redirect() throws Exception {
         // given
         String loginSuccessURI = "POST http://localhost:8080/login?account=gugu&password=password HTTP/1.1\n";
         InputStream inputStream = new ByteArrayInputStream(loginSuccessURI.getBytes());
 
         // when
         HttpRequest httpRequest = new HttpRequest(inputStream);
-        HttpResponse httpResponse = handler.handle(httpRequest);
+        HttpResponse httpResponse = new HttpResponse();
+        controller.service(httpRequest, httpResponse);
 
         // then
         assertThat(httpResponse.getStatusCode()).isEqualTo(302);
@@ -38,13 +38,14 @@ class LoginHandlerTest {
 
     @DisplayName("로그인 실패시 401.html 리다이렉트")
     @Test
-    void login_fail_redirect() throws IOException {
+    void login_fail_redirect() throws Exception {
         String loginSuccessURI = "POST http://localhost:8080/login?account=zezeze&password=password HTTP/1.1\n";
         InputStream inputStream = new ByteArrayInputStream(loginSuccessURI.getBytes());
 
         // when
         HttpRequest httpRequest = new HttpRequest(inputStream);
-        HttpResponse httpResponse = handler.handle(httpRequest);
+        HttpResponse httpResponse = new HttpResponse();
+        controller.service(httpRequest, httpResponse);
 
         // then
         assertThat(httpResponse.getStatusCode()).isEqualTo(302);
@@ -53,13 +54,14 @@ class LoginHandlerTest {
 
     @DisplayName("로그인 성공시 쿠키 반환")
     @Test
-    void login_success_cookie() throws IOException {
+    void login_success_cookie() throws Exception {
         String loginSuccessURI = "POST http://localhost:8080/login?account=gugu&password=password HTTP/1.1\n";
         InputStream inputStream = new ByteArrayInputStream(loginSuccessURI.getBytes());
 
         // when
         HttpRequest httpRequest = new HttpRequest(inputStream);
-        HttpResponse httpResponse = handler.handle(httpRequest);
+        HttpResponse httpResponse = new HttpResponse();
+        controller.service(httpRequest, httpResponse);
 
         // then
         assertThat(httpResponse.getHeader(SET_COOKIE)).isNotEmpty();
@@ -67,14 +69,15 @@ class LoginHandlerTest {
 
     @DisplayName("로그인 성공시 세션 저장")
     @Test
-    void login_success_session() throws IOException {
+    void login_success_session() throws Exception {
         // given
         String loginSuccessURI = "POST http://localhost:8080/login?account=gugu&password=password HTTP/1.1\n";
         InputStream inputStream = new ByteArrayInputStream(loginSuccessURI.getBytes());
 
         // when
         HttpRequest httpRequest = new HttpRequest(inputStream);
-        HttpResponse httpResponse = handler.handle(httpRequest);
+        HttpResponse httpResponse = new HttpResponse();
+        controller.service(httpRequest, httpResponse);
 
         // then
         assertThat(SessionManager.findSession(parseJSESSIONCookieValue(httpResponse)).getId()).isNotEmpty();
@@ -82,7 +85,7 @@ class LoginHandlerTest {
 
     @DisplayName("쿠키값이 존재할 때 리다이렉트 성공")
     @Test
-    void login_success_cookie_exist() throws IOException {
+    void login_success_cookie_exist() throws Exception {
         // given
         String registerSuccessURI = "POST /register HTTP/1.1\n"
                 + "Host: localhost:8080\n"
@@ -93,15 +96,17 @@ class LoginHandlerTest {
                 + "\n"
                 + "account=zeze&password=password&email=hkkang%40woowahan.com";
         InputStream registerInputStream = new ByteArrayInputStream(registerSuccessURI.getBytes());
-        RegisterHandler registerHandler = new RegisterHandler();
-        registerHandler.handle(new HttpRequest(registerInputStream));
+        RegisterController registerServlet = new RegisterController();
+        HttpResponse httpResponse = new HttpResponse();
+        registerServlet.service(new HttpRequest(registerInputStream), httpResponse);
 
         String loginSuccessURI = "POST http://localhost:8080/login?account=zeze&password=password HTTP/1.1\n"
                 + "Host: localhost:8080\n"
                 + "Connection: keep-alive\n"
                 + "Accept: */*\n";
         InputStream loginInputStream = new ByteArrayInputStream(loginSuccessURI.getBytes());
-        HttpResponse loginResponse = handler.handle(new HttpRequest(loginInputStream));
+        HttpResponse loginResponse = new HttpResponse();
+        controller.service(new HttpRequest(loginInputStream), loginResponse);
         String jsessionid = parseJSESSIONCookieValue(loginResponse);
 
         String loginSuccessURI2 = "POST http://localhost:8080/login?account=zeze&password=password HTTP/1.1\n"
@@ -113,7 +118,8 @@ class LoginHandlerTest {
 
         // when
         HttpRequest httpRequest2 = new HttpRequest(loginInputStream2);
-        HttpResponse httpResponse2 = handler.handle(httpRequest2);
+        HttpResponse httpResponse2 = new HttpResponse();
+        controller.service(httpRequest2, httpResponse2);
 
         // then
         assertThat(parseJSESSIONCookieValue(httpResponse2)).isEqualTo(jsessionid);

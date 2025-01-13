@@ -1,8 +1,7 @@
-package org.apache.catalina.handler;
+package org.apache.catalina.controller;
 
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +14,7 @@ import static org.apache.coyote.http11.common.HttpMethodName.GET;
 import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.OK;
 
-public class FileHandler implements Handler {
+public class FileController implements Controller {
 
     private static final Map<String, String> FILE_REQUEST_URI = Map.of(
             "/register", "/register.html",
@@ -23,27 +22,29 @@ public class FileHandler implements Handler {
     private static final String EXTENSION_DELIMITER = "\\.";
 
     @Override
-    public HttpResponse handle(HttpRequest httpRequest) throws IOException {
-        String uri = httpRequest.getUri();
+    public void service(HttpRequest request, HttpResponse response) throws Exception {
+        doGet(request, response);
+    }
 
-        URL url = FileHandler.class.getClassLoader().getResource("static" + uri);
+    protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
+        String uri = request.getUri();
+
+        URL url = FileController.class.getClassLoader().getResource("static" + uri);
         Path path = Paths.get(url.getPath());
         String file = Files.readString(path);
 
-        return createHttpResponse(uri, file);
+        createHttpResponse(response, uri, file);
     }
 
-    private HttpResponse createHttpResponse(String uri, String file) {
-        HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setHttpVersion(HTTP_VERSION11);
-        httpResponse.setStatusCode(OK);
+    private void createHttpResponse(HttpResponse response, String uri, String file) {
+        response.setHttpVersion(HTTP_VERSION11);
+        response.setStatusCode(OK);
 
         String contentType = createFileContentType(uri);
         String fileString = String.valueOf(file.getBytes().length);
-        httpResponse.setHeader(CONTENT_TYPE, contentType);
-        httpResponse.setHeader(CONTENT_LENGTH, fileString);
-        httpResponse.setResponseBody(file);
-        return httpResponse;
+        response.setHeader(CONTENT_TYPE, contentType);
+        response.setHeader(CONTENT_LENGTH, fileString);
+        response.setResponseBody(file);
     }
 
     private String createFileContentType(String resource) {

@@ -1,8 +1,8 @@
-package com.techcourse.handler;
+package com.techcourse.controller;
 
 import com.techcourse.db.InMemoryUserRepository;
 import com.techcourse.model.User;
-import org.apache.catalina.handler.Handler;
+import org.apache.catalina.controller.Controller;
 import org.apache.catalina.session.Session;
 import org.apache.catalina.session.SessionManager;
 import org.apache.coyote.http11.request.HttpRequest;
@@ -15,22 +15,28 @@ import static org.apache.coyote.http11.common.HttpHeaderName.SET_COOKIE;
 import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
 import static org.apache.coyote.http11.response.StatusCode.FOUND;
 
-public class LoginHandler implements Handler {
+public class LoginController implements Controller {
 
     @Override
-    public HttpResponse handle(HttpRequest httpRequest) {
-        if (isAuthExist(httpRequest)) {
-            return createHttpResponse("/index.html", parseAuthInfo(httpRequest));
+    public void service(HttpRequest request, HttpResponse response) throws Exception {
+        doPost(request, response);
+    }
+
+    protected void doPost(HttpRequest request, HttpResponse response) throws Exception {
+        if (isAuthExist(request)) {
+            createHttpResponse(response,"/index.html", parseAuthInfo(request));
+            return;
         }
 
-        String account = httpRequest.getParameter("account");
+        String account = request.getParameter("account");
         Optional<User> user = InMemoryUserRepository.findByAccount(account);
 
         if (user.isPresent()) {
             String authInfo = saveAuthInfo(user.get());
-            return createHttpResponse("/index.html", authInfo);
+            createHttpResponse(response,"/index.html", authInfo);
+            return;
         }
-        return createHttpResponse("/401.html", null);
+        createHttpResponse(response,"/401.html", null);
     }
 
     private boolean isAuthExist(HttpRequest httpRequest) {
@@ -56,13 +62,11 @@ public class LoginHandler implements Handler {
         return uuid.toString();
     }
 
-    private HttpResponse createHttpResponse(String location, String authInfo) {
-        HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setHttpVersion(HTTP_VERSION11);
-        httpResponse.setStatusCode(FOUND);
-        httpResponse.setHeader(LOCATION, location);
-        if (authInfo != null) httpResponse.setHeader(SET_COOKIE, createCookie(authInfo));
-        return httpResponse;
+    private void createHttpResponse(HttpResponse response, String location, String authInfo) {
+        response.setHttpVersion(HTTP_VERSION11);
+        response.setStatusCode(FOUND);
+        response.setHeader(LOCATION, location);
+        if (authInfo != null) response.setHeader(SET_COOKIE, createCookie(authInfo));
     }
 
     private String createCookie(String authInfo) {
