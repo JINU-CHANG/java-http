@@ -14,7 +14,7 @@ public class DefaultController extends AbstractController {
     @Override
     protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
         String responseBody = "Hello world!";
-
+        
         response.setHttpVersion(HTTP_VERSION11);
         response.setStatusCode(OK);
         response.setHeader(CONTENT_TYPE, "text/html;charset=utf-8");
