@@ -18,12 +18,7 @@ public class RegisterController extends AbstractController {
 
     @Override
     protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
-        String uri = request.getUri();
-        if (!request.getUri().contains(".")) {
-            uri = uri + ".html";
-        }
-
-        String file = FileResolver.resolve(uri);
+        String file = FileResolver.resolve("/register.html");
         createGetHttpResponse(response, file);
     }
 
