@@ -27,6 +27,6 @@ public class StatusLine {
     }
 
     public String getStatusMessage() {
-        return statusCode.statusMessage;
+        return statusCode.name();
     }
 }
