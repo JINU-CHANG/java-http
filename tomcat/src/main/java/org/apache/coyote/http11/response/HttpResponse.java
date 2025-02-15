@@ -1,9 +1,11 @@
 package org.apache.coyote.http11.response;
 
+import org.apache.coyote.http11.common.ContentType;
 import org.apache.coyote.http11.common.HttpHeaderName;
 import org.apache.coyote.http11.common.HttpVersion;
 import java.util.Map.Entry;
 
+import static org.apache.coyote.http11.common.ContentTypeName.TEXT_HTML;
 import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
 import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
 import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
@@ -81,8 +83,9 @@ public class HttpResponse {
         response.setHttpVersion(HTTP_VERSION11);
         response.setStatusCode(OK);
 
+        ContentType contentType = new ContentType(TEXT_HTML.getName());
         String responseBodyLength = String.valueOf(responseBody.getBytes().length);
-        response.setHeader(CONTENT_TYPE, "text/html;charset=utf-8");
+        response.setHeader(CONTENT_TYPE, contentType.toString());
         response.setHeader(CONTENT_LENGTH, responseBodyLength);
         response.setResponseBody(responseBody);
     }

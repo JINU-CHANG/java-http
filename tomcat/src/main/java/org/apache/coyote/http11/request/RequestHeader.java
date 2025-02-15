@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.apache.coyote.http11.common.HttpHeaderName.*;
+import static org.apache.coyote.http11.common.HttpHeaderName.COOKIE;
 
 public class RequestHeader {
 
@@ -33,9 +33,9 @@ public class RequestHeader {
         return this.header.get(name);
     }
 
-    public Cookies getCookies() { // TODO Cookie 클래스를 필드로 두는 것, Map 데이터로 두는 것 ,, ?
+    public Cookies getCookies() {
         String result = getHeader(COOKIE.name);
-        if (result == null) return null; // TODO null 관리
+        if (result == null) return null;
         return new Cookies(result);
     }
 
