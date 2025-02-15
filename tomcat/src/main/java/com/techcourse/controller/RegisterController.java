@@ -7,29 +7,12 @@ import org.apache.catalina.controller.AbstractController;
 import org.apache.coyote.http11.request.HttpRequest;
 import org.apache.coyote.http11.response.HttpResponse;
 
-import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
-import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
-import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
-import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
-import static org.apache.coyote.http11.response.StatusCode.FOUND;
-import static org.apache.coyote.http11.response.StatusCode.OK;
-
 public class RegisterController extends AbstractController {
 
     @Override
     protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
         String file = FileResolver.resolve("/register.html");
-        createGetHttpResponse(response, file);
-    }
-
-    private void createGetHttpResponse(HttpResponse response, String file) {
-        response.setHttpVersion(HTTP_VERSION11);
-        response.setStatusCode(OK);
-
-        String fileString = String.valueOf(file.getBytes().length);
-        response.setHeader(CONTENT_TYPE, "text/html;charset=utf-8");
-        response.setHeader(CONTENT_LENGTH, fileString);
-        response.setResponseBody(file);
+        response.createOKHttpResponse(response, file);
     }
 
     @Override
@@ -41,13 +24,7 @@ public class RegisterController extends AbstractController {
         String email = values[2].split("=")[1];
 
         InMemoryUserRepository.save(new User(account, password, email));
-        createPostHttpResponse(response, "/index.html");
-    }
-
-    private void createPostHttpResponse(HttpResponse response, String location) {
-        response.setHttpVersion(HTTP_VERSION11);
-        response.setStatusCode(FOUND);
-        response.setHeader(LOCATION, location);
+        response.createRedirectHttpResponse(response, "/index.html");
     }
 
     @Override

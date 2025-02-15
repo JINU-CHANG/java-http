@@ -4,6 +4,14 @@ import org.apache.coyote.http11.common.HttpHeaderName;
 import org.apache.coyote.http11.common.HttpVersion;
 import java.util.Map.Entry;
 
+import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
+import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
+import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
+import static org.apache.coyote.http11.common.HttpHeaderName.SET_COOKIE;
+import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
+import static org.apache.coyote.http11.response.StatusCode.FOUND;
+import static org.apache.coyote.http11.response.StatusCode.OK;
+
 public class HttpResponse {
 
     private static final String LINE_DELIMITER = "\r\n";
@@ -67,6 +75,33 @@ public class HttpResponse {
     private void joinResponseBody(StringBuilder responseBuilder) {
         responseBuilder.append(LINE_DELIMITER)
                 .append(responseBody);
+    }
+
+    public void createOKHttpResponse(HttpResponse response, String responseBody) {
+        response.setHttpVersion(HTTP_VERSION11);
+        response.setStatusCode(OK);
+
+        String responseBodyLength = String.valueOf(responseBody.getBytes().length);
+        response.setHeader(CONTENT_TYPE, "text/html;charset=utf-8");
+        response.setHeader(CONTENT_LENGTH, responseBodyLength);
+        response.setResponseBody(responseBody);
+    }
+
+    public void createRedirectHttpResponse(HttpResponse response, String location) {
+        response.setHttpVersion(HTTP_VERSION11);
+        response.setStatusCode(FOUND);
+        response.setHeader(LOCATION, location);
+    }
+
+    public void createRedirectHttpResponse(HttpResponse response, String location, String authInfo) {
+        response.setHttpVersion(HTTP_VERSION11);
+        response.setStatusCode(FOUND);
+        response.setHeader(LOCATION, location);
+        if (authInfo != null) response.setHeader(SET_COOKIE, createCookie(authInfo));
+    }
+
+    private String createCookie(String authInfo) {
+        return "JSESSIONID=" + authInfo;
     }
 
     public String getResponseBody() {

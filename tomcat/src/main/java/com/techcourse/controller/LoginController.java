@@ -11,36 +11,18 @@ import org.apache.coyote.http11.response.HttpResponse;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_LENGTH;
-import static org.apache.coyote.http11.common.HttpHeaderName.CONTENT_TYPE;
-import static org.apache.coyote.http11.common.HttpHeaderName.LOCATION;
-import static org.apache.coyote.http11.common.HttpHeaderName.SET_COOKIE;
-import static org.apache.coyote.http11.common.HttpVersion.HTTP_VERSION11;
-import static org.apache.coyote.http11.response.StatusCode.FOUND;
-import static org.apache.coyote.http11.response.StatusCode.OK;
-
 public class LoginController extends AbstractController {
 
     @Override
     protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
         String file = FileResolver.resolve("/login.html");
-        createGetHttpResponse(response, file);
-    }
-
-    private void createGetHttpResponse(HttpResponse response, String file) {
-        response.setHttpVersion(HTTP_VERSION11);
-        response.setStatusCode(OK);
-
-        String fileString = String.valueOf(file.getBytes().length);
-        response.setHeader(CONTENT_TYPE, "text/html;charset=utf-8");
-        response.setHeader(CONTENT_LENGTH, fileString);
-        response.setResponseBody(file);
+        response.createOKHttpResponse(response, file);
     }
 
     @Override
     protected void doPost(HttpRequest request, HttpResponse response) {
         if (isAuthExist(request)) {
-            createPostHttpResponse(response,"/index.html", parseAuthInfo(request));
+            response.createRedirectHttpResponse(response,"/index.html", parseAuthInfo(request));
             return;
         }
 
@@ -49,10 +31,10 @@ public class LoginController extends AbstractController {
 
         if (user.isPresent()) {
             String authInfo = saveAuthInfo(user.get());
-            createPostHttpResponse(response,"/index.html", authInfo);
+            response.createRedirectHttpResponse(response,"/index.html", authInfo);
             return;
         }
-        createPostHttpResponse(response,"/401.html", null);
+        response.createRedirectHttpResponse(response,"/401.html", null);
     }
 
     private boolean isAuthExist(HttpRequest httpRequest) {
@@ -76,17 +58,6 @@ public class LoginController extends AbstractController {
         SessionManager.add(session);
 
         return uuid.toString();
-    }
-
-    private void createPostHttpResponse(HttpResponse response, String location, String authInfo) {
-        response.setHttpVersion(HTTP_VERSION11);
-        response.setStatusCode(FOUND);
-        response.setHeader(LOCATION, location);
-        if (authInfo != null) response.setHeader(SET_COOKIE, createCookie(authInfo));
-    }
-
-    private String createCookie(String authInfo) {
-        return "JSESSIONID=" + authInfo;
     }
 
     @Override
