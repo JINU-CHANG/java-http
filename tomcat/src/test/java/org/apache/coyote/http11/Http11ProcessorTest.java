@@ -2,7 +2,6 @@ package org.apache.coyote.http11;
 
 import org.junit.jupiter.api.Test;
 import support.StubSocket;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +23,7 @@ class Http11ProcessorTest {
         // then
         var expected = String.join("\r\n",
                 "HTTP/1.1 200 OK ",
-                "Content-Type: text/html;charset=utf-8 ",
+                "Content-Type: text/html; charset=utf-8 ",
                 "Content-Length: 12 ",
                 "",
                 "Hello world!");

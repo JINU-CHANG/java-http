@@ -230,7 +230,7 @@ class IOStreamTest {
                     "😋😛😝😜🤪🤨🧐🤓😎🥸🤩",
                     "");
 
-            final InputStream inputStream = new ByteArrayInputStream(emoji.getBytes());
+            final InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(emoji.getBytes()));
             final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
             final StringBuilder actual = new StringBuilder();
 

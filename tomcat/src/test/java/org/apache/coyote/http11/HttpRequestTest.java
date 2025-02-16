@@ -1,11 +1,13 @@
-package org.apache.coyote;
+package org.apache.coyote.http11;
 
+import org.apache.coyote.http11.request.HttpRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.apache.coyote.http11.common.HttpMethodName.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpRequestTest {
@@ -21,15 +23,14 @@ class HttpRequestTest {
         HttpRequest httpRequest = new HttpRequest(inputStream);
 
         // then
-        assertThat(httpRequest.getMethod()).isEqualTo("GET");
-        assertThat(httpRequest.getURI()).isEqualTo("/");
+        assertThat(httpRequest.getMethod()).isEqualTo(GET);
+        assertThat(httpRequest.getUri()).isEqualTo("/");
     }
 
     @DisplayName("QueryString 저장 성공")
     @Test
     void saveQueryString() throws IOException {
         // given
-
         String mockHttpRequest = "GET http://localhost:8080/login?account=gugu&password=password HTTP/1.1\r\n";
         InputStream inputStream = new ByteArrayInputStream(mockHttpRequest.getBytes());
 
@@ -52,5 +53,27 @@ class HttpRequestTest {
 
         // then
         assertThat(httpRequest.getHeader("Host")).isEqualTo("localhost:8080");
+    }
+
+    @DisplayName("RequestBody 저장 성공")
+    @Test
+    void saveRequestBody() throws IOException {
+        // given
+        String mockRequestBody = "account=gugu&password=password&email=hkkang%40woowahan.com";
+        String mockHttpRequest = "POST /register HTTP/1.1\r\n"
+                + "Host: localhost:8080\r\n"
+                + "Connection: keep-alive\r\n"
+                + "Content-Length: 80\r\n"
+                + "Content-Type: application/x-www-form-urlencoded\r\n"
+                + "Accept: */*\r\n"
+                + "\r\n"
+                + mockRequestBody;
+        InputStream inputStream = new ByteArrayInputStream(mockHttpRequest.getBytes());
+
+        // when
+        HttpRequest httpRequest = new HttpRequest(inputStream);
+
+        // then
+        assertThat(httpRequest.getRequestBody()).isEqualTo(mockRequestBody);
     }
 }
