@@ -10,7 +10,7 @@ import org.apache.coyote.http11.response.HttpResponse;
 public class RegisterController extends AbstractController {
 
     @Override
-    protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
+    protected void doGet(HttpRequest request, HttpResponse response) {
         String file = FileResolver.resolve("/register.html");
         response.createOKHttpResponse(response, file);
     }

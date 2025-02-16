@@ -14,7 +14,7 @@ import java.util.UUID;
 public class LoginController extends AbstractController {
 
     @Override
-    protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
+    protected void doGet(HttpRequest request, HttpResponse response) {
         String file = FileResolver.resolve("/login.html");
         response.createOKHttpResponse(response, file);
     }

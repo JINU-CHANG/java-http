@@ -15,7 +15,7 @@ public class FileController extends AbstractController {
     private static final String EXTENSION_DELIMITER = "\\.";
 
     @Override
-    protected void doGet(HttpRequest request, HttpResponse response) throws Exception {
+    protected void doGet(HttpRequest request, HttpResponse response) {
         String uri = request.getUri();
         String file = FileResolver.resolve(uri);
         createHttpResponse(response, uri, file);
